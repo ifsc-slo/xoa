@@ -1,0 +1,40 @@
+version: '3'
+services:
+    app:
+        restart: unless-stopped
+        image: ifscslo/xoa:20230426
+        container_name: xoa-app
+        ports:
+            - "8001:8000"
+            - "8443:8443"
+        depends_on:
+            - redis
+        environment:
+            - DEBUG=xo:main
+            - NODE_ENV=production
+            - XOA_PLAN=5
+        #privileged: true
+        # SYS_ADMIN should be enough capability to use NFS mount
+        cap_add:
+          - SYS_ADMIN
+        volumes:
+            - xoa-data:/storage
+            # - ../xen-orchestra:/xoa
+        logging: &default_logging
+            driver: "json-file"
+            options:
+                max-size: "1M"
+                max-file: "2"
+    redis:
+        restart: unless-stopped
+        container_name: xoa-redis
+        image: redis:alpine
+        command: redis-server --appendonly yes
+        volumes:
+            - xoa-redis-data:/data
+        logging:
+            <<: *default_logging
+
+volumes:
+  xoa-data:
+  xoa-redis-data:
