@@ -1,0 +1,3 @@
+[submodule "xen-orchestra"]
+	path = xen-orchestra
+	url = https://github.com/ifsc-slo/xen-orchestra
